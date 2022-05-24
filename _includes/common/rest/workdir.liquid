@@ -17,3 +17,15 @@
     {%- endfor -%}
 {%- endcapture -%}
 {%- assign workdir_dirs = items | split: "|" -%}
+
+{%- assign workdir_pages = "" | split: "," -%}
+{%- for item in site_pages | where_exp: "item", "item.dir contains workdir" -%}
+  {%- if item.dir == item.url -%}
+    {%- assign current_m1 = item.dir | append: "temp" | replace_first: "/", "" | split: "/" | size | minus: 1 -%}
+  {%- else -%}
+    {%- assign current_m1 = item.dir | append: "temp" | replace_first: "/", "" | split: "/" | size -%}
+  {%- endif  -%}
+  {%- if current_m1 == workdir_level and item.url contains workdir and item.url != workdir -%}
+    {%- assign workdir_pages = workdir_pages | push: item  -%}
+  {%- endif  -%}
+{%- endfor -%}
