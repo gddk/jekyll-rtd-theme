@@ -17,7 +17,7 @@
 <ul>
   {% comment %} list file {% endcomment %}
   {%- for dkitem in workdir_pages -%}
-  {%- unless dkitem.redirect_to or dkitem.hide_nav -%}
+  {%- unless dkitem.redirect_to or dkitem.nav_exclude -%}
     {%- if dkitem.dir == dkitem.url -%}
       {%- assign level = dkitem.dir | append: "temp" | replace_first: "/", "" | split: "/" | size | minus: 2 %}
       <li class="toc level-{{ level }}">{% include templates/_toctree.liquid workdir=dkitem.dir %}</li>
