@@ -175,6 +175,8 @@ function restore() {
 
 function highlight() {
   let text = new URL(location.href).searchParams.get("highlight");
+  text = '([\\[\\]\\(\\)]*' + text + '[\\[\\]\\(\\)]*)';
+  text = text.replace(/-/g, '[ \\[\\]\\(\\)]+');
 
   if (text) {
     $(".markdown-body")
@@ -192,10 +194,10 @@ function highlight() {
     // last node
     $(".search-result").each(function () {
       $(this).html(function (i, html) {
-        return html.replace(text, `<span class="bg-yellow">${text}</span>`);
+        return html.replace(new RegExp(text, "im"), '<span class="bg-yellow">$1</span>');
       });
     });
-    $(".search input").val(text);
+    $(".search input").val(new URL(location.href).searchParams.get("highlight"));
   }
 }
 
