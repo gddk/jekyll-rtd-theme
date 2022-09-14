@@ -1,21 +1,21 @@
-function search (data) {
-  const text = new URL(location.href).searchParams.get('q');
-  const lang = new URL(location.href).searchParams.get('lang') || ui.lang;
+function search(data) {
+  let text = new URL(location.href).searchParams.get("q");
+  let lang = new URL(location.href).searchParams.get("lang") || ui.lang;
 
   $("input[name='q']").val(text);
 
-  const results = [];
+  let results = [];
   let regexp = new RegExp();
   try {
-    regexp = new RegExp(text, 'im');
+    regexp = new RegExp(text, "im");
   } catch (e) {
-    $('.search-results .content').empty();
-    $('.search-results .summary').html(ui.i18n.search_results_not_found);
-    $('.search-results h2').html(ui.i18n.search_results);
+    $(".search-results .content").empty();
+    $(".search-results .summary").html(ui.i18n.search_results_not_found);
+    $(".search-results h2").html(ui.i18n.search_results);
     return debug(e.message);
   }
 
-  function slice (content, min, max) {
+  function slice(content, min, max) {
     return content
       .slice(min, max)
       .replace(regexp, (match) => `<span class="bg-yellow">${match}</span>`);
@@ -26,7 +26,7 @@ function search (data) {
       if (page.title) {
         title = page.title.match(regexp);
       } else {
-        if (page.url == '/') {
+        if (page.url == "/") {
           page.title = ui.title;
         } else {
           page.title = page.url;
@@ -37,26 +37,26 @@ function search (data) {
     }
     try {
       if (page.content) {
-        page.content = $('<div/>').html(page.content).text();
+        page.content = $("<div/>").html(page.content).text();
         content = page.content.match(regexp);
       }
     } catch (e) {
       debug(e.message);
     }
     if (title || content) {
-      const result = [
-        `<a href="${ui.baseurl}${page.url}?highlight=${text}">${page.title}</a>`
+      let result = [
+        `<a href="${ui.baseurl}${page.url}?highlight=${text}">${page.title}</a>`,
       ];
       if (content) {
         let [min, max] = [content.index - 100, content.index + 100];
-        let [prefix, suffix] = ['...', '...'];
+        let [prefix, suffix] = ["...", "..."];
 
         if (min < 0) {
-          prefix = '';
+          prefix = "";
           min = 0;
         }
         if (max > page.content.length) {
-          suffix = '';
+          suffix = "";
           max = page.content.length;
         }
         result.push(
@@ -67,63 +67,63 @@ function search (data) {
           )}${suffix}</p>`
         );
       }
-      results.push(`<li class="border-top py-4">${result.join('')}</li>`);
+      results.push(`<li class="border-top py-4">${result.join("")}</li>`);
     }
   }
   if (results.length > 0 && text.length > 0) {
-    $('.search-results .content').html(results.join(''));
-    $('.search-results .summary').html(
-      ui.i18n.search_results_found.replace('#', results.length)
+    $(".search-results .content").html(results.join(""));
+    $(".search-results .summary").html(
+      ui.i18n.search_results_found.replace("#", results.length)
     );
   } else {
-    $('.search-results .content').empty();
-    $('.search-results .summary').html(ui.i18n.search_results_not_found);
+    $(".search-results .content").empty();
+    $(".search-results .summary").html(ui.i18n.search_results_not_found);
   }
-  $('.search-results h2').html(ui.i18n.search_results);
+  $(".search-results h2").html(ui.i18n.search_results);
 }
 
-function initialize (name) {
-  const link = $('.toctree').find(`[href="${decodeURI(name)}"]`);
+function initialize(name) {
+  let link = $(".toctree").find(`[href="${decodeURI(name)}"]`);
 
   if (link.length > 0) {
-    $('.toctree .current').removeClass('current');
-    link.addClass('current');
-    link.closest('.level-1').parent().addClass('current');
+    $(".toctree .current").removeClass("current");
+    link.addClass("current");
+    link.closest(".level-1").parent().addClass("current");
     for (let i = 1; i <= 11; i++) {
-      link.closest(`.level-${i}`).addClass('current');
+      link.closest(`.level-${i}`).addClass("current");
     }
   }
 }
 
-function toggleCurrent (link) {
-  const closest = link.closest('li');
-  closest.siblings('li.current').removeClass('current');
-  closest.siblings().find('li.current').removeClass('current');
-  closest.find('> ul li.current').removeClass('current');
-  closest.toggleClass('current');
+function toggleCurrent(link) {
+  let closest = link.closest("li");
+  closest.siblings("li.current").removeClass("current");
+  closest.siblings().find("li.current").removeClass("current");
+  closest.find("> ul li.current").removeClass("current");
+  closest.toggleClass("current");
 }
 
-function toc () {
-  $('.toctree li.current')
+function toc() {
+  $(".toctree li.current")
     .append('<ul class="content-toc"></ul>')
     .html(function () {
-      const level = parseInt(this.dataset.level);
+      let level = parseInt(this.dataset.level);
       let temp = 0;
-      const stack = [$(this).find('.content-toc')];
+      let stack = [$(this).find(".content-toc")];
 
-      $('.markdown-body')
-        .find('h2,h3,h4,h5,h6')
+      $(".markdown-body")
+        .find("h2,h3,h4,h5,h6")
         .each(function () {
-          const anchor = $('<a/>')
-            .addClass('d-flex flex-items-baseline')
+          let anchor = $("<a/>")
+            .addClass("d-flex flex-items-baseline")
             .text($(this).text())
-            .attr('href', `#${this.id}`);
-          const tagLevel = parseInt(this.tagName.slice(1)) - 1;
+            .attr("href", `#${this.id}`);
+          let tagLevel = parseInt(this.tagName.slice(1)) - 1;
 
           if (tagLevel > temp) {
-            const parent = stack[0].children('li:last')[0];
+            let parent = stack[0].children("li:last")[0];
             if (parent) {
-              stack.unshift($('<ul/>').appendTo(parent));
+              stack.unshift($("<ul/>").appendTo(parent));
             }
           } else {
             stack.splice(
@@ -133,7 +133,7 @@ function toc () {
           }
           temp = tagLevel;
 
-          $('<li/>')
+          $("<li/>")
             .addClass(`toc level-${level + tagLevel}`)
             .append(anchor)
             .appendTo(stack[0]);
@@ -144,77 +144,76 @@ function toc () {
     });
 }
 
-function set (name, value) {
+function set(name, value) {
   return localStorage.setItem(name, value);
 }
 
-function get (name) {
+function get(name) {
   return localStorage.getItem(name) || false;
 }
 
-function debug () {
+function debug() {
   console.debug.apply(console, arguments);
 }
 
-function restore () {
-  const scroll = get('scroll');
-  const scrollTime = get('scrollTime');
-  const scrollHost = get('scrollHost');
+function restore() {
+  let scroll = get("scroll");
+  let scrollTime = get("scrollTime");
+  let scrollHost = get("scrollHost");
 
   if (scroll && scrollTime && scrollHost) {
     if (scrollHost == location.host && Date.now() - scrollTime < 6e5) {
-      $('.sidebar').scrollTop(scroll);
+      $(".sidebar").scrollTop(scroll);
     }
   }
-  $('.sidebar').scroll(function () {
-    set('scroll', this.scrollTop);
-    set('scrollTime', Date.now());
-    set('scrollHost', location.host);
+  $(".sidebar").scroll(function () {
+    set("scroll", this.scrollTop);
+    set("scrollTime", Date.now());
+    set("scrollHost", location.host);
   });
 }
 
-function highlight () {
-  const text = new URL(location.href).searchParams.get('highlight');
+function highlight() {
+  let text = new URL(location.href).searchParams.get("highlight");
 
   if (text) {
-    $('.markdown-body')
-      .find('*')
+    $(".markdown-body")
+      .find("*")
       .each(function () {
         try {
-          if (this.outerHTML.match(new RegExp(text, 'im'))) {
-            $(this).addClass('search-result');
-            $(this).parentsUntil('.markdown-body').removeClass('search-result');
+          if (this.outerHTML.match(new RegExp(text, "im"))) {
+            $(this).addClass("search-result");
+            $(this).parentsUntil(".markdown-body").removeClass("search-result");
           }
         } catch (e) {
           debug(e.message);
         }
       });
     // last node
-    let newText = text.replace(/\\/g, '');
-    $('.search-result').each(function () {
+    $(".search-result").each(function () {
       $(this).html(function (i, html) {
-        return html.replace(new RegExp(text, 'im'), `<span class="bg-yellow">${newText}</span>`);
+        return html.replace(text, `<span class="bg-yellow">${text}</span>`);
       });
     });
-    $('.search input').val(text);
+    $(".search input").val(text);
   }
 }
 
-$(window).bind('hashchange', () =>
+$(window).bind("hashchange", () =>
   initialize(location.hash || location.pathname)
 );
 
-$(document).on('scroll', function () {
-  const start = $(this).scrollTop() + 5;
-  const items = [];
+$(document).on("scroll", function () {
+  let start = $(this).scrollTop() + 5;
+  let items = [];
 
-  $('.markdown-body')
-    .find('h1,h2,h3,h4,h5,h6')
+  $(".markdown-body")
+    .find("h1,h2,h3,h4,h5,h6")
     .each(function () {
       items.push({
         offset: $(this).offset().top,
         id: this.id,
-        level: parseInt(this.tagName.slice(1))
+        level: parseInt(this.tagName.slice(1)),
       });
     });
   for (let i = 0; i < items.length; i++) {
@@ -224,21 +223,21 @@ $(document).on('scroll', function () {
           if (items[i].level == 1) {
             initialize(location.pathname);
           } else {
-            initialize('#' + items[i].id);
+            initialize("#" + items[i].id);
           }
         }
       } else {
-        initialize('#' + items[i].id);
+        initialize("#" + items[i].id);
       }
     }
   }
 });
 
-$('#toggle').click(function () {
-  $('.sidebar-wrap,.content-wrap,.addons-wrap').toggleClass('shift');
+$("#toggle").click(function () {
+  $(".sidebar-wrap,.content-wrap,.addons-wrap").toggleClass("shift");
 });
-$('.status').click(function () {
-  $('.addons').toggleClass('d-none');
+$(".status").click(function () {
+  $(".addons").toggleClass("d-none");
 });
 
 if (location.pathname == `${ui.baseurl}/search.html`) {
@@ -254,13 +253,13 @@ restore();
 highlight();
 
 /* nested ul */
-$('.toc ul')
-  .siblings('a')
+$(".toc ul")
+  .siblings("a")
   .each(function () {
-    const link = $(this);
-    const expand = $('<i class="fa fa-plus-square-o"></i>');
+    let link = $(this);
+    let expand = $('<i class="fa fa-plus-square-o"></i>');
 
-    expand.on('click', function (e) {
+    expand.on("click", function (e) {
       e.stopPropagation();
       toggleCurrent(link);
       return false;
@@ -268,21 +267,22 @@ $('.toc ul')
     link.prepend(expand);
   });
 
-$('.markdown-body :header').append(function () {
+$(".markdown-body :header").append(function () {
   return `<a href="#${this.id}" class="anchor"><i class="octicon-link fa fa-link text-blue"></i></a>`;
 });
 
-$('div.highlighter-rouge').each(function () {
+$("div.highlighter-rouge").each(function () {
   const match = $(this)
-    .attr('class')
+    .attr("class")
     .match(/language-(\w+)/);
   if (match) {
-    $(this).attr('data-lang', match[1]);
+    $(this).attr("data-lang", match[1]);
   }
 });
 
-if ('serviceWorker' in navigator) {
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register(`${ui.baseurl}/sw.caches.js`);
 } else {
-  debug('Service Worker not supported!');
+  debug("Service Worker not supported!");
 }
+
