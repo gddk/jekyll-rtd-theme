@@ -197,7 +197,9 @@ function highlight() {
         return html.replace(new RegExp(searchText, "im"), '<span class="bg-yellow">$1</span>');
       });
     });
-    $(".search input").val(text);
+    if ( !($(location).attr('hash') && text.contains('-')) ) {
+      $(".search input").val(text);
+    }
   }
 }
 
