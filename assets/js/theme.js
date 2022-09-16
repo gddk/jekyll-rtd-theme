@@ -175,15 +175,15 @@ function restore() {
 
 function highlight() {
   let text = new URL(location.href).searchParams.get("highlight");
-  text = '([\\[\\]\\(\\)]*' + text + '[\\[\\]\\(\\)]*)';
-  text = text.replace(/-/g, '[ \\[\\]\\(\\)]+');
+  let searchText = '([\\[\\]\\(\\)]*(<em>){0,1}' + text + '[\\[\\]\\(\\)]*(</em>){0,1})';
+  searchText = searchText.replace(/-/g, '(</em>){0,1}[ \\[\\]\\(\\).]+(<em>){0,1}');
 
   if (text) {
     $(".markdown-body")
       .find("*")
       .each(function () {
         try {
-          if (this.outerHTML.match(new RegExp(text, "im"))) {
+          if (this.outerHTML.match(new RegExp(searchText, "im"))) {
             $(this).addClass("search-result");
             $(this).parentsUntil(".markdown-body").removeClass("search-result");
           }
@@ -194,10 +194,10 @@ function highlight() {
     // last node
     $(".search-result").each(function () {
       $(this).html(function (i, html) {
-        return html.replace(new RegExp(text, "im"), '<span class="bg-yellow">$1</span>');
+        return html.replace(new RegExp(searchText, "im"), '<span class="bg-yellow">$1</span>');
       });
     });
-    $(".search input").val(new URL(location.href).searchParams.get("highlight"));
+    $(".search input").val(text);
   }
 }
 
