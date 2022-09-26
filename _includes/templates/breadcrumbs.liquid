@@ -20,6 +20,9 @@
                     <li class="breadcrumb-item" {% if forloop.last %}aria-current="page"{% endif %}>
                         {%- if forloop.last -%}
                             {{ page.name }}
+                            {%- if page.shortlink -%}
+                                &nbsp;(<a href="{{ page.shortlink }}">{{ page.shortlink }}</a>)
+                            {%- endif -%}
                         {%- else -%}
                             <a href="{{ site.baseurl }}/{% for block in blocks limit: forloop.index %}{{ block }}/{% endfor %}">{{ block }}</a>
                         {%- endif -%}
